@@ -101,4 +101,18 @@ public class ArrayDequeTest {
         assertEquals("Should return null when removeLast is called on an empty Deque,", null, lld1.removeLast());
 
     }
+
+    @Test
+    public void equaltes(){
+        LinkedListDeque<Integer> lld = new LinkedListDeque<>();
+        ArrayDeque<Integer> ad = new ArrayDeque<>();
+        ArrayDeque<Integer> ad2 = new ArrayDeque<>();
+        lld.addFirst(1);
+        ad.addFirst(1);
+        ad2.addFirst(1);
+        ad2.addFirst(2);
+        assert(lld.equals(ad));
+        assertFalse(ad.equals(ad));
+        assertFalse(ad.equals(ad2));
+     }
 }

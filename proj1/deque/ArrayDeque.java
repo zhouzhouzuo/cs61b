@@ -2,15 +2,13 @@ package deque;
 
 import java.util.Iterator;
 
-public class ArrayDeque <T> implements Iterable<T>{
+public class ArrayDeque <T> implements Deque<T>,Iterable<T>{
     private T[] items;
     private int head;
     private int tail;
 
     private int size;
     private int capacity;
-
-    private int addFirstflag = 0;
 
     public ArrayDeque() {
         items = (T[]) new Object[8];
@@ -65,7 +63,7 @@ public class ArrayDeque <T> implements Iterable<T>{
 
     public void resizedelete(){
         int position = 0;
-        int newCapacity = capacity / 4 ;
+        int newCapacity = Math.max(capacity / 4, 8);
         T[] newitems = (T[]) new Object[newCapacity];
 
         for (int i = 0;i < tail;i++){
@@ -88,8 +86,11 @@ public class ArrayDeque <T> implements Iterable<T>{
         if (size == capacity){
             resizeadd();
         }
-        addFirstflag = 1;
-        head = (head - 1 + capacity) % capacity;
+        if (size == 0) {
+            head = capacity - 1;
+        } else {
+            head = (head - 1 + capacity) % capacity;
+        }
         items[head] = item;
         size += 1;
     }
@@ -101,10 +102,6 @@ public class ArrayDeque <T> implements Iterable<T>{
         items[tail] = item;
         tail = (tail + 1) % capacity;
         size += 1;
-    }
-
-    public boolean isEmpty(){
-        return size == 0;
     }
 
     public int size(){
@@ -121,11 +118,10 @@ public class ArrayDeque <T> implements Iterable<T>{
 
     public T removeFirst(){
         if (size == 0){
+            head = capacity - 1;
             return null;
         }
-        if (addFirstflag == 0){
-            head = capacity-1;
-        }
+
         T temp = items[head];
         head = (head + 1) % capacity;
         size -= 1;
@@ -141,7 +137,7 @@ public class ArrayDeque <T> implements Iterable<T>{
         }
         int position =  (tail - 1 + capacity) % capacity;
         T temp = items[position];
-        tail = (tail - 1) % capacity;
+        tail = position;
         size -= 1;
         if ((size < capacity/ 4) && (size > 4)) {
             resizedelete();
@@ -153,29 +149,17 @@ public class ArrayDeque <T> implements Iterable<T>{
         return  items[(head+index) % capacity];
     }
 
-    public boolean contains(T x) {
-        for (int i = 0; i < size; i += 1) {
-            if (items[i].equals(x)) {
-                return true;
+    public boolean equals(Object o){
+        if (o == null){return false;}
+        if (o == this){return false;}
+        if (!(o instanceof Deque)){return false;}
+        Deque<T> others =  (  Deque<T> ) o;
+        if  (  others.size ( ) != size ) {return false;  }
+        for  (  int i = 0;   i<size;   ++ i ) {
+            if  (  !others.get (  i ).equals (  this.get (  i ) ) ) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
-
-//    public boolean equals(Object o){
-//        if(o instanceof ArrayDeque a){
-//            if (a.size != this.size){
-//                return false;
-//            }
-//
-//            for (T i : this){
-//                if (!a.contains(i)){
-//                    return false;
-//                }
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
-
 }

@@ -1,9 +1,8 @@
 package deque;
 
-import java.util.Deque;
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Iterable<T>{
+public class LinkedListDeque<T> implements Deque<T>,Iterable<T>{
     public class IntNode {
         public IntNode prev;
         public T item;
@@ -80,10 +79,6 @@ public class LinkedListDeque<T> implements Iterable<T>{
         size += 1;
     }
 
-    public boolean isEmpty(){
-        return size == 0;
-    }
-
     public int size(){
         return size;
     }
@@ -97,22 +92,25 @@ public class LinkedListDeque<T> implements Iterable<T>{
         System.out.println ( );
     }
 
-    public T removeFirst(){
-        if (size == 0){
+    public T removeFirst() {
+        if (size == 0) {
             return null;
         }
-        IntNode temp = sentinel.next;
-        if (size == 1){
-            sentinel.next = null;
-            sentinel.prev = null;
-        }
-        else {
-            temp.next.prev = sentinel;
-            sentinel.next = temp.next;
-        }
-        size -= 1;
 
-        return  temp.item;
+        IntNode temp = sentinel.next;  // 保存要删除的节点
+        T removedItem = temp.item;     // 保存要返回的元素
+
+        // 如果链表中只有一个元素
+        if (size == 1) {
+            sentinel.next = sentinel;
+            sentinel.prev = sentinel;
+        } else {
+            sentinel.next = temp.next;
+            temp.next.prev = sentinel;
+        }
+
+        size -= 1;
+        return removedItem;
     }
 
     public T removeLast(){
@@ -121,8 +119,8 @@ public class LinkedListDeque<T> implements Iterable<T>{
         }
         IntNode temp = sentinel.prev;
         if (size == 1){
-            sentinel.next = null;
-            sentinel.prev = null;
+            sentinel.next = sentinel;
+            sentinel.prev = sentinel;
         }
         else {
             temp.prev.next = sentinel;
@@ -170,19 +168,17 @@ public class LinkedListDeque<T> implements Iterable<T>{
         return false;
     }
 
-//    public boolean equals(Object o){
-//        if(o instanceof LinkedListDeque a){
-//            if (a.size != this.size){
-//                return false;
-//            }
-//
-//            for (T i : this){
-//                if (!a.contains(i)){
-//                    return false;
-//                }
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
+    public boolean equals(Object o){
+        if (o == null){return false;}
+        if (o == this){return false;}
+        if (!(o instanceof Deque)){return false;}
+        Deque<T> others =  (  Deque<T> ) o;
+        if  (  others.size ( ) != size ) {return false;  }
+        for  (  int i = 0;   i<size;   ++ i ) {
+            if  (  !others.get(i).equals (  this.get ( i ) ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
